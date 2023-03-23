@@ -37,7 +37,19 @@ class CharList extends Component {
     const { allChar, loading, error } = this.state;
 
     const items = allChar.map((char) => {
-      return <Char key={char.id} name={char.name} thumbnail={char.thumbnail} />;
+      return (
+        <Char
+          id={char.id}
+          key={char.id}
+          name={char.name}
+          thumbnail={char.thumbnail}
+          onSelectedChar={this.props.onSelectedChar}
+          onClick={() => {
+            console.log(char.id);
+            this.props.onSelectedChar(char.id);
+          }}
+        />
+      );
     });
 
     const errorMessage = error ? <ErrorMessage /> : null;
@@ -59,26 +71,28 @@ class CharList extends Component {
   }
 }
 
-const Char = ({ name, thumbnail }) => {
+const Char = ({ name, thumbnail, id, onSelectedChar }) => {
+  let imgStyle = { objectFit: "cover" };
+  if (
+    thumbnail ===
+    "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
+  ) {
+    imgStyle = { objectFit: "fill" };
+  }
+
   return (
-    <li className="char__item">
-      {thumbnail ==
-      "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? (
-        <img
-          src={thumbnail}
-          style={{
-            objectFit: "contain",
-          }}
-          alt="Random character"
-          className="randomchar__img"
-        />
-      ) : (
-        <img
-          src={thumbnail}
-          alt="Random character"
-          className="randomchar__img"
-        />
-      )}
+    <li
+      className="char__item"
+      onClick={() => {
+        onSelectedChar(id);
+      }}
+    >
+      <img
+        src={thumbnail}
+        style={imgStyle}
+        alt="Random character"
+        className="randomchar__img"
+      />
       <div className="char__name">{name}</div>
     </li>
   );
